@@ -4,7 +4,7 @@ import streamlit as st
 from urllib.parse import quote_plus
 from backend.logic import db
 
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     load_dotenv()
