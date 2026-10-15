@@ -1,6 +1,4 @@
 import streamlit as st
-from backend import api
-import pandas as pd
 import ui
 from logic.utils import get_selected_row, load_data
 from backend.logic import errors

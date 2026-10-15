@@ -3,9 +3,9 @@ import datetime as dt
 from backend.config import JWT_KEY
 from backend import models
 from backend.logic import crud
-from backend.logic.db import sql
 from pwdlib import PasswordHash
 from backend.logic import errors
+
 hasher = PasswordHash.recommended()
 
 def create_access_token(user_id: int, exp: dt.datetime) -> str:

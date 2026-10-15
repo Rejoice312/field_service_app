@@ -12,7 +12,7 @@ if DEBUG:
     JWT_KEY = os.getenv('JWT_KEY')
 else:
     DB_PASSWORD = st.secrets('DB_PASSWORD')
-    DB_URI_FORMAT = ''
+    DB_URI_FORMAT = 'postgresql://postgres.wplsidnxifehdytxqoti:{password}@aws-0-eu-west-1.pooler.supabase.com:5432/postgres'
     DB_URI = DB_URI_FORMAT.format(password = quote_plus(DB_PASSWORD))
     JWT_KEY = st.secrets('JWT_KEY')
 
