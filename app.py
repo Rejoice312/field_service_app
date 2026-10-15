@@ -65,6 +65,7 @@ with signup_tab:
                 display.error(e)
                 st.stop()
             except Exception as e:
+                print(e)
                 display.error('Failed to signup. Check your internet connection')
                 st.stop()
 
