@@ -1,6 +1,8 @@
 import pandas as pd
 from backend import api
 from streamlit_local_storage import LocalStorage
+from streamlit import cache_data
+from typing import Literal
 
 
 
@@ -19,16 +21,13 @@ def get_selected_row(event, df: pd.DataFrame) -> pd.Series | None:
 
 
 # Data loading
-def load_data():
-    user = api.get_user_details(token = access_token)
-    persons = api.get_persons(token = access_token)
-    conversations = api.get_conversations(by = 'users', id = user.id)
-    students = api.get_students(token = access_token)
+@cache_data
+def load_data(table: Literal['persons', 'conversations', 'students']) -> pd.DataFrame:
+    if table == 'persons':
+        result = api.get_persons(token = access_token)
+    elif table == 'conversations':
+        result = api.get_conversations(token = access_token)
+    elif table == 'students':
+        result = api.get_students(token = access_token)
 
-    return {
-        'user': user,
-        'data': [
-            pd.DataFrame([data.model_dump() for data in model_object])
-            for model_object in (persons, conversations, students)
-        ]
-    }
+    return pd.DataFrame([result_item.model_dump() for result_item in result])

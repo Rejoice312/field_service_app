@@ -10,3 +10,6 @@ from .students import (
     show_add_student_form,
     show_delete_student_form
 )
+from .auth import (
+    show_logout_form
+)

@@ -43,8 +43,9 @@ def add_conversation(conversation: models.ConversationInput, token: str = None) 
         raise errors.DoesNotExistError('The person for this conversation does not exist. Add person first')
     return crud.add_conversation(conversation)
 
-def get_conversations(by: Literal['conversations', 'persons', 'users'], id: int, limit: int | None = None) -> list[models.Conversation] | None:
-    return crud.get_conversations(by = by, id = id, limit = limit)
+def get_conversations(token: str, limit: int | None = None) -> list[models.Conversation] | None:
+    user = auth.get_current_user(token)
+    return crud.get_conversations(by = 'users', id = user.id, limit = limit)
 
 def update_conversation(conversation: models.ConversationInput, token: str = None) -> bool:
     user = auth.get_current_user(token)
