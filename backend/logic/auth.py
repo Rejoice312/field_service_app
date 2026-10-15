@@ -30,7 +30,7 @@ def verify_access_token(token: str) -> dict | None:
 
 
 
-def signup(user: models.UserInput) -> str | None:
+def signup(user: models.UserInput) -> str:
     user = crud.add_user(user)
     token = create_access_token(
         user_id = user.id, 

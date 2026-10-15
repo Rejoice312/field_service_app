@@ -10,7 +10,7 @@ password_hasher = PasswordHash.recommended()
 #=============
 #   USERS
 #=============
-def add_user(user: models.UserInput):
+def add_user(user: models.UserInput) -> models.User:
     ''' Returns None if adding user fails, else the user'''
 
     password_hash = password_hasher.hash(user.password)
@@ -26,6 +26,7 @@ def add_user(user: models.UserInput):
             params = (user.name, password_hash, user.email),
             fetch_one = True,
         )
+        return models.User(**user_data)
     except pg_errors.UniqueViolation as e: 
         print(e)
         raise errors.AuthenticationError('User exists')
