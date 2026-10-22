@@ -25,7 +25,7 @@ FRONTEND_DIR = Path(__file__).parent.parent / 'frontend'
 
 app.mount(
     '/assets',
-    StaticFiles(directory='../frontend/dist/assets'),
+    StaticFiles(directory=FRONTEND_DIR / 'dist' / 'assets'),
     name='assets'
 )
 
