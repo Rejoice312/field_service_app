@@ -10,7 +10,7 @@ from typing import Annotated
 from logic.db import sql
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 import models
 from logic import auth, crud, errors
 from fastapi.staticfiles import StaticFiles
@@ -21,6 +21,7 @@ from fastapi.responses import FileResponse
 
 
 app = FastAPI(title='Field Service App API')
+FRONTEND_DIR = Path(__file__).parent.parent / 'frontend'
 
 app.mount(
     '/assets',
@@ -33,7 +34,7 @@ app.mount(
 
 @app.get('/')
 def homepage():
-    return FileResponse('../frontend/dist/index.html')
+    return FileResponse(FRONTEND_DIR / 'dist' / 'index.html')
 
 @app.get('/api/users/me', response_model=models.UserOutput)
 def get_user_details(user: Annotated[models.User, Depends(auth.get_current_user)]):
