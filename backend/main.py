@@ -258,8 +258,8 @@ def update_conversation(
 
     '''
     try:
-        id_of_true_user = sql(q, params = (conversation_id,), fetch_one=True)[0]
-    except TypeError as e:
+        id_of_true_user = sql(q, params = (conversation_id,), fetch_one=True).get('user_id')
+    except Exception as e:
         print(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

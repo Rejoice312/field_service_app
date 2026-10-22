@@ -10,7 +10,7 @@ from urllib.parse import quote_plus
 from dotenv import load_dotenv
 
 
-DEBUG = False
+DEBUG = True
 
 # Local development loads environment variables from a .env file. When DEBUG is
 # false, the app expects values to be available in the Streamlit secrets manager.
