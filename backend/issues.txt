@@ -1,1 +1,0 @@
-* Bar chart not showing studies per person instead of per person per month
