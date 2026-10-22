@@ -20,7 +20,7 @@ from fastapi.responses import FileResponse
 
 
 
-app = FastAPI(title='Field Service App API')
+app = FastAPI(title='Field Service App')
 FRONTEND_DIR = Path(__file__).parent.parent / 'frontend'
 
 app.mount(
