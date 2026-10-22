@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Header from '../../components/header/Header'
-import { apiFetch } from '../../App'
+import { API_DOMAIN, apiFetch } from '../../App'
 import './Dashboard.css'
 
 function DashboardPage({ user, token, onLogout }) {
@@ -21,9 +21,9 @@ function DashboardPage({ user, token, onLogout }) {
 
       try {
         const [peopleData, conversationsData, studentsData] = await Promise.all([
-          apiFetch('/api/me/persons', {}, token),
-          apiFetch('/api/me/conversations', {}, token),
-          apiFetch('/api/me/students', {}, token),
+          apiFetch(`${API_DOMAIN}/api/me/persons`, {}, token),
+          apiFetch(`${API_DOMAIN}/api/me/conversations`, {}, token),
+          apiFetch(`${API_DOMAIN}/api/me/students`, {}, token),
         ])
 
         setPeople(peopleData)

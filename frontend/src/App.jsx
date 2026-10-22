@@ -8,6 +8,7 @@ import Signup from './pages/signup/Signup'
 import './App.css'
 
 
+const API_DOMAIN = 'http://localhost:8001'
 
 function getStoredToken() {
   return localStorage.getItem('field_service_token') || ''
@@ -51,7 +52,7 @@ function App() {
     let isMounted = true
     setLoadingUser(true)
 
-    apiFetch('/api/users/me', {}, token)
+    apiFetch(`${API_DOMAIN}/api/users/me`, {}, token)
       .then((profile) => {
         if (isMounted) {
           setUser(profile)
@@ -87,7 +88,7 @@ function App() {
 
   const handleLogin = async (email, password) => {
     const form = new URLSearchParams({ username: email, password })
-    const loginResponse = await fetch('/api/auth/login', {
+    const loginResponse = await fetch(`${API_DOMAIN}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: form.toString(),
@@ -105,7 +106,7 @@ function App() {
   }
 
   const handleSignup = async (payload) => {
-    const response = await fetch('/api/auth/signup', {
+    const response = await fetch(`${API_DOMAIN}/api/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -178,6 +179,6 @@ function App() {
   )
 }
 
-export { apiFetch }
+export { API_DOMAIN, apiFetch }
 
 export default App

@@ -15,6 +15,8 @@ import models
 from logic import auth, crud, errors
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from config import DEBUG
 
 
 
@@ -29,6 +31,17 @@ app.mount(
     name='assets'
 )
 
+if DEBUG:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            'http://localhost:5173',
+            'http://127.0.0.1:5173'
+        ],
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*']
+    )
 
 
 
@@ -170,7 +183,7 @@ def update_person(
         where id = %s
     '''
     try:
-        id_of_true_user = sql(q, params = (person.id,), as_dict = False, fetch_one = True)[0]
+        id_of_true_user = sql(q, params = (person_id,), fetch_one = True).get('user_id')
     except TypeError:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Unable to validate person ownership') 
     

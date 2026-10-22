@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
 import Header from '../../components/header/Header'
-import { apiFetch } from '../../App'
+import { API_DOMAIN, apiFetch } from '../../App'
 
 const emptyPersonForm = {
   name: '',
@@ -49,9 +49,9 @@ export function DataManager({ user, token, onLogout }) {
 
     try {
       const [peopleData, conversationsData, studentsData] = await Promise.all([
-        apiFetch('/api/me/persons', {}, token),
-        apiFetch('/api/me/conversations', {}, token),
-        apiFetch('/api/me/students', {}, token),
+        apiFetch(`${API_DOMAIN}/api/me/persons`, {}, token),
+        apiFetch(`${API_DOMAIN}/api/me/conversations`, {}, token),
+        apiFetch(`${API_DOMAIN}/api/me/students`, {}, token),
       ])
 
       setPeople(peopleData)
@@ -187,14 +187,14 @@ export function DataManager({ user, token, onLogout }) {
 
     try {
       if (editingPersonId) {
-        await apiFetch(`/api/me/persons?person_id=${editingPersonId}`, {
+        await apiFetch(`${API_DOMAIN}/api/me/persons?person_id=${editingPersonId}`, {
           method: 'PATCH',
           body: JSON.stringify(payload),
         }, token)
         setSuccess('Person updated successfully.')
       } else {
         await apiFetch(
-          '/api/me/persons',
+          `${API_DOMAIN}/api/me/persons`,
           {
             method: 'POST',
             body: JSON.stringify([payload]),
@@ -228,14 +228,14 @@ export function DataManager({ user, token, onLogout }) {
 
     try {
       if (editingConversationId) {
-        await apiFetch(`/api/me/conversations?conversation_id=${editingConversationId}`, {
+        await apiFetch(`${API_DOMAIN}/api/me/conversations?conversation_id=${editingConversationId}`, {
           method: 'PATCH',
           body: JSON.stringify(payload),
         }, token)
         setSuccess('Conversation updated successfully.')
       } else {
         await apiFetch(
-          '/api/me/conversations',
+          `${API_DOMAIN}/api/me/conversations`,
           {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -268,14 +268,14 @@ export function DataManager({ user, token, onLogout }) {
 
     try {
       if (editingStudentPersonId) {
-        await apiFetch(`/api/me/students/?student_id=${editingStudentPersonId}`, { method: 'DELETE' }, token)
-        await apiFetch('/api/me/students', {
+        await apiFetch(`${API_DOMAIN}/api/me/students/?student_id=${editingStudentPersonId}`, { method: 'DELETE' }, token)
+        await apiFetch(`${API_DOMAIN}/api/me/students`, {
           method: 'POST',
           body: JSON.stringify(payload),
         }, token)
         setSuccess('Student updated successfully.')
       } else {
-        await apiFetch('/api/me/students', {
+        await apiFetch(`${API_DOMAIN}/api/me/students`, {
           method: 'POST',
           body: JSON.stringify(payload),
         }, token)
@@ -296,7 +296,7 @@ export function DataManager({ user, token, onLogout }) {
     if (!confirmed) return
 
     try {
-      await apiFetch(`/api/me/conversations?conversation_id=${conversationId}`, { method: 'DELETE' }, token)
+      await apiFetch(`${API_DOMAIN}/api/me/conversations?conversation_id=${conversationId}`, { method: 'DELETE' }, token)
       setSuccess('Conversation deleted.')
       loadData()
     } catch (err) {
@@ -309,7 +309,7 @@ export function DataManager({ user, token, onLogout }) {
     if (!confirmed) return
 
     try {
-      await apiFetch(`/api/me/students/?student_id=${studentId}`, { method: 'DELETE' }, token)
+      await apiFetch(`${API_DOMAIN}/api/me/students/?student_id=${studentId}`, { method: 'DELETE' }, token)
       setSuccess('Student removed.')
       loadData()
     } catch (err) {
