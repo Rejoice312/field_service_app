@@ -1,0 +1,161 @@
+"""Authentication and authorization helpers for the Field Service backend.
+
+This module handles password verification, JWT creation, token validation, and
+secure extraction of the authenticated user from Bearer-token requests.
+"""
+
+import datetime as dt
+from typing import Annotated
+
+import jwt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pwdlib import PasswordHash
+
+import models
+from config import JWT_KEY
+from logic import crud, errors
+
+# Recommended password hashing strategy for modern secure password storage.
+hasher = PasswordHash.recommended()
+# OAuth2 password flow expects a token endpoint path that clients will call to get a JWT.
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/auth/login')
+ALGORITHM = 'HS256'
+ACCESS_TOKEN_EXPIRE_DAYS = 30
+
+
+def create_access_token(user_id: int, exp: dt.datetime | None = None) -> str:
+    """Create a signed JWT for an authenticated user.
+
+    Args:
+        user_id: The internal database id for the authenticated user.
+        exp: Optional expiration timestamp. If omitted, a 30-day token is issued.
+
+    Returns:
+        A compact JWT string ready to be sent in the Authorization header.
+    """
+    if exp is None:
+        exp = dt.datetime.now(dt.UTC) + dt.timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
+
+    payload = {
+        'sub': str(user_id),
+        'exp': exp,
+    }
+    return jwt.encode(payload, key=JWT_KEY, algorithm=ALGORITHM)
+
+
+def verify_access_token(token: str) -> dict:
+    """Validate and decode a JWT bearer token.
+
+    Args:
+        token: The raw JWT string from the Authorization header.
+
+    Returns:
+        The decoded JWT claims dictionary.
+
+    Raises:
+        AuthenticationError: If the token is expired, malformed, or invalid.
+    """
+    try:
+        return jwt.decode(token, key=JWT_KEY, algorithms=[ALGORITHM])
+    except jwt.PyJWTError as exc:
+        raise errors.AuthenticationError('Invalid or expired token') from exc
+
+
+def authenticate_user(email: str, password: str) -> models.User:
+    """Return the user record only when email/password credentials are valid.
+
+    Args:
+        email: The user's email address.
+        password: The raw password submitted by the client.
+
+    Returns:
+        The stored user record.
+
+    Raises:
+        AuthenticationError: When the email does not exist or the password is wrong.
+    """
+    try:
+        user_in_db = crud.get_user(email=email)
+    except errors.DoesNotExistError as exc:
+        raise errors.AuthenticationError('Invalid email or password') from exc
+
+    if not hasher.verify(password, user_in_db.password_hash):
+        raise errors.AuthenticationError('Invalid email or password')
+
+    return user_in_db
+
+
+def signup(user: models.UserInput) -> models.User:
+    """Create a new user and return the newly persisted record.
+
+    Args:
+        user: User registration payload containing name, email, and password.
+
+    Returns:
+        The created user row.
+    """
+    return crud.add_user(user)
+
+
+def login(user: models.LoginUser) -> str:
+    """Issue a JWT for a user if the submitted password is valid.
+
+    Args:
+        user: Login payload containing email and password.
+
+    Returns:
+        Signed JWT access token.
+    """
+    user_in_db = authenticate_user(user.email, user.password)
+    return create_access_token(user_in_db.id)
+
+
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User:
+    """FastAPI dependency for loading the authenticated user from a bearer token.
+
+    This function is used by protected endpoints to resolve the currently logged-in
+    user from the HTTP Authorization header.
+
+    Args:
+        token: JWT value supplied by the OAuth2 bearer scheme.
+
+    Returns:
+        The authenticated user model.
+
+    Raises:
+        HTTPException: 401 if the token is missing, expired, or invalid.
+    """
+    try:
+        payload = verify_access_token(token)
+    except errors.AuthenticationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Invalid authentication credentials',
+            headers={'WWW-Authenticate': 'Bearer'},
+        ) from exc
+
+    try:
+        return crud.get_user(id=int(payload['sub']))
+    except errors.DoesNotExistError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Invalid authentication credentials',
+            headers={'WWW-Authenticate': 'Bearer'},
+        ) from exc
+
+
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict[str, str]:
+    """Return a Bearer token when a username/password form is submitted.
+
+    This is the standard OAuth2 password flow endpoint used by FastAPI clients.
+
+    Args:
+        form_data: Username/password form values generated by the OAuth2 helper.
+
+    Returns:
+        A JSON payload containing the access token and its token type.
+    """
+    user = authenticate_user(form_data.username, form_data.password)
+    token = create_access_token(user.id)
+    return {'access_token': token, 'token_type': 'bearer'}

@@ -1,0 +1,131 @@
+.dashboard-page {
+  padding-bottom: 3rem;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-card {
+  text-align: center;
+}
+
+.dashboard-panel {
+  margin-top: 1.5rem;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading h3 {
+  margin: 0;
+}
+
+.section-heading span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7a5b4d;
+}
+
+.dashboard-table {
+  margin-top: 0;
+}
+
+.bar-chart-wrap {
+  width: 100%;
+  overflow-x: auto;
+  padding-top: 0.5rem;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  min-height: 280px;
+  padding: 1rem 0.5rem 0;
+}
+
+.bar-column {
+  display: flex;
+  flex: 1 1 80px;
+  min-width: 90px;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bar-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4d3b34;
+}
+
+.bar-rail {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  background: linear-gradient(180deg, #fff2eb 0%, #fdf7f3 100%);
+  border: 1px solid #f1d6c6;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  width: 100%;
+  background: linear-gradient(180deg, #f39b59 0%, #d85711 100%);
+  border-radius: 10px 10px 0 0;
+  min-height: 4px;
+}
+
+.bar-label {
+  max-width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #583f35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loading-panel {
+  padding: 1.5rem;
+  text-align: center;
+  color: #5a4136;
+}
+
+.dashboard-error {
+  margin-bottom: 1rem;
+}
+
+.dashboard-empty-state {
+  background: #fff;
+  border: 1px solid #f2d8c7;
+  border-radius: 18px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #5b3d2f;
+  box-shadow: 0 8px 24px rgba(118, 67, 31, 0.06);
+}
+
+.dashboard-empty-state h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.8rem;
+}
+
+.dashboard-empty-state p {
+  margin: 0;
+  color: #7a5a49;
+}
