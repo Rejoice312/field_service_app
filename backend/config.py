@@ -7,9 +7,8 @@ production fallback via secrets.
 
 import os
 from urllib.parse import quote_plus
-
 from dotenv import load_dotenv
-import streamlit as st
+
 
 DEBUG = False
 
