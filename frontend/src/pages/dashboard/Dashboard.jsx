@@ -86,6 +86,7 @@ function DashboardPage({ user, token, onLogout }) {
 
   const studentStudyCounts = useMemo(() => {
     const counts = new Map()
+    let today = new Date()
 
     for (const student of students) {
       const name = personMap[student.person_id]?.name || `Student ${student.person_id}`
@@ -94,7 +95,9 @@ function DashboardPage({ user, token, onLogout }) {
         count: conversations.filter(
           (conversation) =>
             conversation.person_id === student.person_id &&
-            conversation.type === 'Bible Study',
+            conversation.type === 'Bible Study' &&
+            new Date(conversation.date).getFullYear() === today.getFullYear() &&
+            new Date(conversation.date).getMonth() === today.getMonth()
         ).length,
       })
     }
@@ -169,7 +172,7 @@ function DashboardPage({ user, token, onLogout }) {
             <section className="panel dashboard-panel">
               <div className="section-heading">
                 <h3>Studies per student</h3>
-                <span>Bible Study conversations</span>
+                <span>conversations this month</span>
               </div>
 
               {studentStudyCounts.length ? (
