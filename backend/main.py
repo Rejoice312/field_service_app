@@ -46,7 +46,11 @@ if DEBUG:
 
 
 @app.get('/')
-def homepage():
+@app.get('/login')
+@app.get('/signup')
+@app.get('/data')
+@app.get('/dashboard')
+def get_frontend():
     return FileResponse(FRONTEND_DIR / 'dist' / 'index.html')
 
 @app.get('/api/users/me', response_model=models.UserOutput)
