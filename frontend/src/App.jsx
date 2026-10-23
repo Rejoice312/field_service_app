@@ -8,7 +8,7 @@ import Signup from './pages/signup/Signup'
 import './App.css'
 
 
-const API_DOMAIN = 'http://localhost:8001'
+const API_DOMAIN = ''
 
 function getStoredToken() {
   return localStorage.getItem('field_service_token') || ''
